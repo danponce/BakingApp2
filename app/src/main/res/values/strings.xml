@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">BakingApp</string>
+
+    <string name="back_button">Back</string>
+    <string name="next_button">Next</string>
+    <string name="no_video">No Video</string>
+    <string name="description_title">Description</string>
+</resources>

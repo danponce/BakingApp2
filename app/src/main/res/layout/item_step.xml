@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="step"
+            type="com.creativeprojects.android.bakingapp.models.Step"/>
+    </data>
+
+    <LinearLayout android:id="@+id/step_linear_container"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_margin="3dp"
+                  android:background="@color/material_grey_200"
+                  android:orientation="vertical"
+                  android:paddingBottom="16dp"
+                  android:paddingTop="16dp">
+
+        <TextView
+            android:id="@+id/step_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="casual"
+            android:gravity="center"
+            android:text="@{step.shortDescription}"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+</layout>
