@@ -104,7 +104,7 @@ public class StepListWidgetRemoteViewsFactory implements RemoteViewsService.Remo
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_ingredient);
 
         rv.setTextViewText(R.id.ingredient_desc, ingredient.getIngredient());
-        return null;
+        return rv;
     }
 
     @Override
