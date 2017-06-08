@@ -47,8 +47,9 @@ public class StepListWidgetRemoteViewsFactory implements RemoteViewsService.Remo
     @Override
     public void onCreate()
     {
-        int widgetId = mIntent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
         Log.i(TAG, "In service...");
+
+        int widgetId = mIntent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
         SharedPreferences prefs = mContext.getSharedPreferences("Recipes", MODE_PRIVATE);
 
@@ -59,6 +60,9 @@ public class StepListWidgetRemoteViewsFactory implements RemoteViewsService.Remo
             Gson gson = new Gson();
             String json = prefs.getString("Recipe", "");
             Recipe recipe = gson.fromJson(json, Recipe.class);
+
+            if(recipe == null)
+                return;
 
             mRecipeId = recipe.getId();
 

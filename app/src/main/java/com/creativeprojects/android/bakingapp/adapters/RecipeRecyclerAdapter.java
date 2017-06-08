@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RemoteViews;
 
+import com.creativeprojects.android.bakingapp.MainActivity;
 import com.creativeprojects.android.bakingapp.R;
 import com.creativeprojects.android.bakingapp.models.Recipe;
 import com.creativeprojects.android.bakingapp.RecipeDescriptionActivity;
@@ -37,19 +38,19 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder
     private static String TAG = RecipeRecyclerAdapter.class.getSimpleName();
 
     private List<Recipe> mRecipeList;
-    private Context mContext;
+    private MainActivity mMainActivity;
     private int mWidgetId = -1;
 
-    public RecipeRecyclerAdapter(Context context, List<Recipe> recipeList, int widgetId)
+    public RecipeRecyclerAdapter(MainActivity mainActivity, List<Recipe> recipeList, int widgetId)
     {
-        mContext = context;
+        mMainActivity = mainActivity;
         mRecipeList = recipeList;
         mWidgetId = widgetId;
     }
 
-    public RecipeRecyclerAdapter(Context context, List<Recipe> recipeList)
+    public RecipeRecyclerAdapter(MainActivity mainActivity, List<Recipe> recipeList)
     {
-        mContext = context;
+        mMainActivity = mainActivity;
         mRecipeList = recipeList;
     }
 
@@ -60,7 +61,6 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder
                                                             R.layout.item_recipe,
                                                             parent,
                                                             false);
-        mContext = parent.getContext();
 
         return new RecipeViewHolder(binding);
     }
@@ -98,7 +98,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder
             Log.i(TAG, "WidgetId : " + mWidgetId);
             if(mWidgetId != -1)
             {
-                SharedPreferences prefs = mContext.getSharedPreferences("Recipes", MODE_PRIVATE);
+                SharedPreferences prefs = mMainActivity.getSharedPreferences("Recipes", MODE_PRIVATE);
 
                 SharedPreferences.Editor prefsEditor = prefs.edit();
                 Gson gson = new Gson();
@@ -106,16 +106,19 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder
                 prefsEditor.putString("Id: " + mWidgetId, json);
                 prefsEditor.commit();
 
-                Intent intent = new Intent();
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId);
-                ((Activity) mContext).setResult(Activity.RESULT_OK, intent);
-                ((Activity) mContext).finish();
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mMainActivity);
 
-                RemoteViews views = new RemoteViews(mContext.getPackageName(),
+                RemoteViews views = new RemoteViews(mMainActivity.getPackageName(),
                                                     R.layout.step_list_widget);
 
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
                 appWidgetManager.updateAppWidget(mWidgetId, views);
+
+                Intent intent = new Intent();
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId);
+                mMainActivity.setResult(Activity.RESULT_OK, intent);
+                mMainActivity.finish();
+
+
 
                 /*Intent updateIntent = new Intent(mContext, StepListWidgetProvider.class);
 
@@ -126,12 +129,12 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder
                 return;
             }
 
-            Intent intent = new Intent(mContext, RecipeDescriptionActivity.class);
+            Intent intent = new Intent(mMainActivity, RecipeDescriptionActivity.class);
 
             // Send the recipe object
             EventBus.getDefault().postSticky(mRecipeList.get(mRecipePosition));
 
-            mContext.startActivity(intent);
+            mMainActivity.startActivity(intent);
         }
     }
 }

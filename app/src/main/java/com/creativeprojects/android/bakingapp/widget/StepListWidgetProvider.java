@@ -26,9 +26,16 @@ public class StepListWidgetProvider extends AppWidgetProvider
     private static String TAG = StepListWidgetProvider.class.getSimpleName();
 
     @Override
+    public void onReceive(Context context, Intent intent)
+    {
+        super.onReceive(context, intent);
+    }
+
+    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds)
     {
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
 
         Log.i(TAG, "On Update widget");
 
@@ -59,7 +66,6 @@ public class StepListWidgetProvider extends AppWidgetProvider
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
         }
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     /*@Override
