@@ -155,7 +155,7 @@ public class ConfigurationActivity extends AppCompatActivity
 
                     SharedPreferences.Editor prefsEditor = prefs.edit();
                     Gson gson = new Gson();
-                    String json = gson.toJson(mRecipe);
+                    String json = gson.toJson(mRecipe.getIngredients());
                     prefsEditor.putString("Id: " + mWidgetId, json);
                     prefsEditor.commit();
 

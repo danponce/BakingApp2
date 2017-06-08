@@ -1,5 +1,5 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:configure="com.creativeprojects.android.bakingapp.MainActivity"
+                    android:configure="com.creativeprojects.android.bakingapp.widget.ConfigurationActivity"
                     android:initialLayout="@layout/step_list_widget"
                     android:minWidth="40dp"
                     android:minHeight="40dp"

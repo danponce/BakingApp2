@@ -16,13 +16,13 @@ import com.creativeprojects.android.bakingapp.models.Step;
 import com.creativeprojects.android.bakingapp.network.APIInterface;
 import com.creativeprojects.android.bakingapp.network.RetrofitAPIClient;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -36,7 +36,6 @@ public class StepListWidgetRemoteViewsFactory implements RemoteViewsService.Remo
     private Context mContext;
     private List<Ingredient> mIngredientList;
     private Intent mIntent;
-    private int mRecipeId;
 
     public StepListWidgetRemoteViewsFactory(Context context, Intent intent)
     {
@@ -58,39 +57,30 @@ public class StepListWidgetRemoteViewsFactory implements RemoteViewsService.Remo
         {
             // Get the Recipe
             Gson gson = new Gson();
-            String json = prefs.getString("Recipe", "");
-            Recipe recipe = gson.fromJson(json, Recipe.class);
+            String json = prefs.getString("Id: " + widgetId, "");
+            Type type = new TypeToken<List<Ingredient>>() {}.getType();
 
-            if(recipe == null)
+            List<Ingredient> ingredientList = gson.fromJson(json, type);
+
+            if(ingredientList == null)
                 return;
 
-            mRecipeId = recipe.getId();
+            mIngredientList = ingredientList;
 
-            Log.i(TAG, "Recipe in service : " + recipe.getId());
+            Log.i(TAG, "Ingredients size: " + ingredientList.size());
+
+            for (int i = 0; i < mIngredientList.size(); i++)
+            {
+                Log.i(TAG, " - Ingredient : " + mIngredientList.get(i).getIngredient());
+                Log.i(TAG, " -- Measure : " + mIngredientList.get(i).getMeasure());
+            }
         }
     }
 
     @Override
     public void onDataSetChanged()
     {
-        APIInterface apiInterface = RetrofitAPIClient.getClient().create(APIInterface.class);
 
-        Call<List<Recipe>> recipesCall = apiInterface.getRecipes();
-
-        try
-        {
-            List<Recipe> recipeList = recipesCall.execute().body();
-
-            for (Recipe recipe : recipeList)
-            {
-                if(recipe.getId() == mRecipeId)
-                    mIngredientList = recipe.getIngredients();
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -108,10 +98,10 @@ public class StepListWidgetRemoteViewsFactory implements RemoteViewsService.Remo
     @Override
     public RemoteViews getViewAt(int i)
     {
-        // Get the step
+        // Get the ingredient
         Ingredient ingredient = mIngredientList.get(i);
 
-        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_step);
+        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_ingredient);
 
         rv.setTextViewText(R.id.ingredient_desc, ingredient.getIngredient());
         return null;
