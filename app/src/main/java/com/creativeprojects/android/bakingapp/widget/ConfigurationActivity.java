@@ -1,18 +1,15 @@
-package com.creativeprojects.android.bakingapp;
+package com.creativeprojects.android.bakingapp.widget;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 
-import com.creativeprojects.android.bakingapp.adapters.RecipeRecyclerAdapter;
+import com.creativeprojects.android.bakingapp.R;
 import com.creativeprojects.android.bakingapp.adapters.RecipeViewHolder;
 import com.creativeprojects.android.bakingapp.databinding.ItemRecipeBinding;
 import com.creativeprojects.android.bakingapp.models.Recipe;
@@ -36,32 +33,38 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public class MainActivity extends AppCompatActivity
+public class ConfigurationActivity extends AppCompatActivity
 {
-    private final String TAG = MainActivity.class.getSimpleName();
+    private final String TAG = ConfigurationActivity.class.getSimpleName();
 
     RecyclerView mRecipeRecyclerView;
 
     // In case the widget called this activity, this variable it's for storing the widget id
-    int mWidgetId = -1;
+    int mWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_configuration);
 
-        if(findViewById(R.id.grid_recyclerview) != null)
+        Bundle extras = getIntent().getExtras();
+
+        if(extras != null)
         {
-            mRecipeRecyclerView = (RecyclerView) findViewById(R.id.grid_recyclerview);
-            mRecipeRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+            mWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+
+            // If the activity was opened with the widget,
+            // then set result to canceled to ensure
+            // that if user exits the activity, the widget
+            // it's not created
+            Intent intent = new Intent();
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId);
+            setResult(Activity.RESULT_CANCELED, intent);
         }
-        else
-        {
-            mRecipeRecyclerView = (RecyclerView) findViewById(R.id.recipe_recycler_view);
-            mRecipeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        }
+
+        mRecipeRecyclerView = (RecyclerView) findViewById(R.id.recipe_recycler_view);
+        mRecipeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         APIInterface apiInterface = RetrofitAPIClient.getClient().create(APIInterface.class);
 
@@ -77,14 +80,11 @@ public class MainActivity extends AppCompatActivity
                 ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
                 progressBar.setVisibility(View.GONE);
 
-                if(mWidgetId != -1)
+                if(mWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
                 {
-                    mRecipeRecyclerView.setAdapter(new RecipeRecyclerAdapter(MainActivity.this, recipeList, mWidgetId));
+                    mRecipeRecyclerView.setAdapter(new RecipeRecyclerAdapter(recipeList));
                     return;
                 }
-
-                mRecipeRecyclerView.setAdapter(new RecipeRecyclerAdapter(MainActivity.this, recipeList));
-                return;
             }
 
             @Override
@@ -95,24 +95,14 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder>
+    private class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder>
     {
         private String TAG = RecipeRecyclerAdapter.class.getSimpleName();
 
         private List<Recipe> mRecipeList;
-        private Context mContext;
-        private int mWidgetId = -1;
 
-        public RecipeRecyclerAdapter(Context context, List<Recipe> recipeList, int widgetId)
+        public RecipeRecyclerAdapter(List<Recipe> recipeList)
         {
-            mContext = context;
-            mRecipeList = recipeList;
-            mWidgetId = widgetId;
-        }
-
-        public RecipeRecyclerAdapter(Context context, List<Recipe> recipeList)
-        {
-            mContext = context;
             mRecipeList = recipeList;
         }
 
@@ -158,7 +148,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 Log.i(TAG, "WidgetId : " + mWidgetId);
-                if(mWidgetId != -1)
+                if(mWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
                 {
                     SharedPreferences prefs = getSharedPreferences("Recipes", MODE_PRIVATE);
 
@@ -168,35 +158,15 @@ public class MainActivity extends AppCompatActivity
                     prefsEditor.putString("Id: " + mWidgetId, json);
                     prefsEditor.commit();
 
-                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(MainActivity.this);
-
-                    RemoteViews views = new RemoteViews(getPackageName(),
-                                                        R.layout.step_list_widget);
-
-                    appWidgetManager.updateAppWidget(mWidgetId, views);
+                    StepListWidgetProvider.updateWidget(ConfigurationActivity.this, mWidgetId);
 
                     Intent intent = new Intent();
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId);
                     setResult(Activity.RESULT_OK, intent);
                     finish();
 
-
-
-                /*Intent updateIntent = new Intent(mContext, StepListWidgetProvider.class);
-
-                EventBus.getDefault().postSticky(mRecipe);
-
-                mContext.sendBroadcast(updateIntent);*/
-
                     return;
                 }
-
-                Intent intent = new Intent(MainActivity.this, RecipeDescriptionActivity.class);
-
-                // Send the recipe object
-                EventBus.getDefault().postSticky(mRecipeList.get(mRecipePosition));
-
-                startActivity(intent);
             }
         }
     }
