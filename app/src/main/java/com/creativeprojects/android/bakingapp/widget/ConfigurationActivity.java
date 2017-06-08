@@ -148,6 +148,7 @@ public class ConfigurationActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 Log.i(TAG, "WidgetId : " + mWidgetId);
+
                 if(mWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
                 {
                     SharedPreferences prefs = getSharedPreferences("Recipes", MODE_PRIVATE);
@@ -164,8 +165,6 @@ public class ConfigurationActivity extends AppCompatActivity
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId);
                     setResult(Activity.RESULT_OK, intent);
                     finish();
-
-                    return;
                 }
             }
         }

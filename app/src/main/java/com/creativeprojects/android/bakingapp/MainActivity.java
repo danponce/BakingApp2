@@ -43,9 +43,6 @@ public class MainActivity extends AppCompatActivity
 
     RecyclerView mRecipeRecyclerView;
 
-    // In case the widget called this activity, this variable it's for storing the widget id
-    int mWidgetId = -1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -77,12 +74,6 @@ public class MainActivity extends AppCompatActivity
                 ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
                 progressBar.setVisibility(View.GONE);
 
-                if(mWidgetId != -1)
-                {
-                    mRecipeRecyclerView.setAdapter(new RecipeRecyclerAdapter(MainActivity.this, recipeList, mWidgetId));
-                    return;
-                }
-
                 mRecipeRecyclerView.setAdapter(new RecipeRecyclerAdapter(MainActivity.this, recipeList));
                 return;
             }
@@ -93,111 +84,5 @@ public class MainActivity extends AppCompatActivity
                 Log.e(TAG, "Error : " + t.getMessage());
             }
         });
-    }
-
-    public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder>
-    {
-        private String TAG = RecipeRecyclerAdapter.class.getSimpleName();
-
-        private List<Recipe> mRecipeList;
-        private Context mContext;
-        private int mWidgetId = -1;
-
-        public RecipeRecyclerAdapter(Context context, List<Recipe> recipeList, int widgetId)
-        {
-            mContext = context;
-            mRecipeList = recipeList;
-            mWidgetId = widgetId;
-        }
-
-        public RecipeRecyclerAdapter(Context context, List<Recipe> recipeList)
-        {
-            mContext = context;
-            mRecipeList = recipeList;
-        }
-
-        @Override
-        public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-        {
-            ItemRecipeBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                                                                R.layout.item_recipe,
-                                                                parent,
-                                                                false);
-
-            return new RecipeViewHolder(binding);
-        }
-
-        @Override
-        public void onBindViewHolder(RecipeViewHolder holder, int position)
-        {
-            Recipe recipe = mRecipeList.get(position);
-
-            holder.getBinding().recipeLinearContainer.setOnClickListener(new RecipeClickListener(position, recipe));
-
-            holder.bind(recipe);
-        }
-
-        @Override
-        public int getItemCount()
-        {
-            return mRecipeList.size();
-        }
-
-        class RecipeClickListener implements View.OnClickListener
-        {
-            int mRecipePosition;
-            Recipe mRecipe;
-
-            public RecipeClickListener(int recipePosition, Recipe recipe)
-            {
-                mRecipePosition = recipePosition;
-                mRecipe = recipe;
-            }
-
-            @Override
-            public void onClick(View view)
-            {
-                Log.i(TAG, "WidgetId : " + mWidgetId);
-                if(mWidgetId != -1)
-                {
-                    SharedPreferences prefs = getSharedPreferences("Recipes", MODE_PRIVATE);
-
-                    SharedPreferences.Editor prefsEditor = prefs.edit();
-                    Gson gson = new Gson();
-                    String json = gson.toJson(mRecipe);
-                    prefsEditor.putString("Id: " + mWidgetId, json);
-                    prefsEditor.commit();
-
-                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(MainActivity.this);
-
-                    RemoteViews views = new RemoteViews(getPackageName(),
-                                                        R.layout.step_list_widget);
-
-                    appWidgetManager.updateAppWidget(mWidgetId, views);
-
-                    Intent intent = new Intent();
-                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId);
-                    setResult(Activity.RESULT_OK, intent);
-                    finish();
-
-
-
-                /*Intent updateIntent = new Intent(mContext, StepListWidgetProvider.class);
-
-                EventBus.getDefault().postSticky(mRecipe);
-
-                mContext.sendBroadcast(updateIntent);*/
-
-                    return;
-                }
-
-                Intent intent = new Intent(MainActivity.this, RecipeDescriptionActivity.class);
-
-                // Send the recipe object
-                EventBus.getDefault().postSticky(mRecipeList.get(mRecipePosition));
-
-                startActivity(intent);
-            }
-        }
     }
 }

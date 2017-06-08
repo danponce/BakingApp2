@@ -39,14 +39,6 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder
 
     private List<Recipe> mRecipeList;
     private MainActivity mMainActivity;
-    private int mWidgetId = -1;
-
-    public RecipeRecyclerAdapter(MainActivity mainActivity, List<Recipe> recipeList, int widgetId)
-    {
-        mMainActivity = mainActivity;
-        mRecipeList = recipeList;
-        mWidgetId = widgetId;
-    }
 
     public RecipeRecyclerAdapter(MainActivity mainActivity, List<Recipe> recipeList)
     {
@@ -95,40 +87,6 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder
         @Override
         public void onClick(View view)
         {
-            Log.i(TAG, "WidgetId : " + mWidgetId);
-            if(mWidgetId != -1)
-            {
-                SharedPreferences prefs = mMainActivity.getSharedPreferences("Recipes", MODE_PRIVATE);
-
-                SharedPreferences.Editor prefsEditor = prefs.edit();
-                Gson gson = new Gson();
-                String json = gson.toJson(mRecipe);
-                prefsEditor.putString("Id: " + mWidgetId, json);
-                prefsEditor.commit();
-
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mMainActivity);
-
-                RemoteViews views = new RemoteViews(mMainActivity.getPackageName(),
-                                                    R.layout.step_list_widget);
-
-                appWidgetManager.updateAppWidget(mWidgetId, views);
-
-                Intent intent = new Intent();
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId);
-                mMainActivity.setResult(Activity.RESULT_OK, intent);
-                mMainActivity.finish();
-
-
-
-                /*Intent updateIntent = new Intent(mContext, StepListWidgetProvider.class);
-
-                EventBus.getDefault().postSticky(mRecipe);
-
-                mContext.sendBroadcast(updateIntent);*/
-
-                return;
-            }
-
             Intent intent = new Intent(mMainActivity, RecipeDescriptionActivity.class);
 
             // Send the recipe object
