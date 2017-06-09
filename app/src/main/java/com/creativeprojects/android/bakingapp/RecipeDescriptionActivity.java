@@ -27,13 +27,11 @@ public class RecipeDescriptionActivity extends AppCompatActivity implements Step
 
         if(findViewById(R.id.description_fragment_container) != null)
             mTwoPane = true;
-        else
-        {
-            TextView recipeNameTextView = (TextView) findViewById(R.id.recipe_name_textview);
 
-            // Set the name of the recipe chosen
-            recipeNameTextView.setText(mRecipe.getName());
-        }
+        TextView recipeNameTextView = (TextView) findViewById(R.id.recipe_name_textview);
+
+        // Set the name of the recipe chosen
+        recipeNameTextView.setText(mRecipe.getName());
 
         if(savedInstanceState == null)
         {

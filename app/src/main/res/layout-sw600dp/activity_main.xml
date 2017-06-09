@@ -12,7 +12,7 @@
     tools:context="com.creativeprojects.android.bakingapp.MainActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/grid_recyclerview"
+        android:id="@+id/recipe_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -21,5 +21,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
+
+    <!-- Used to know the sw600dp layout is the actual one -->
+    <View
+        android:id="@+id/test_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"/>
 </RelativeLayout>
 

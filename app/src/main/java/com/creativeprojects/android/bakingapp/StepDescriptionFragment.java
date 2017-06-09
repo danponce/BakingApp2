@@ -2,16 +2,22 @@ package com.creativeprojects.android.bakingapp;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.creativeprojects.android.bakingapp.models.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -32,6 +38,9 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.io.File;
+import java.io.IOException;
 
 public class StepDescriptionFragment extends Fragment
 {
@@ -99,6 +108,22 @@ public class StepDescriptionFragment extends Fragment
             mStepPosition = savedInstanceState.getInt(STEP_POSITION);
             mStepListSize = savedInstanceState.getInt(STEP_LIST_SIZE);
             mTwoPane = savedInstanceState.getBoolean("two_pane");
+        }
+
+        ImageView thumbnailImageView = (ImageView) view.findViewById(R.id.thumbnail_imageview);
+
+        if(thumbnailImageView != null)
+        {
+            String thumbnailUrl = mStep.getThumbnailURL();
+
+            if(thumbnailUrl != null && !thumbnailUrl.isEmpty())
+            {
+                thumbnailImageView.setVisibility(View.VISIBLE);
+
+                Glide.with(getActivity() )
+                        .load( thumbnailUrl )
+                        .into( thumbnailImageView );
+            }
         }
 
         // Find step buttons id's

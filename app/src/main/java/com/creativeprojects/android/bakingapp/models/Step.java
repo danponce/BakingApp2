@@ -26,4 +26,9 @@ public class Step
     {
         return videoURL;
     }
+
+    public String getThumbnailURL()
+    {
+        return thumbnailURL;
+    }
 }
