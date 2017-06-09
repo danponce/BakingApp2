@@ -17,6 +17,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 /**
  * Created by Dan on 09-06-17.
+ *
+ * Espresso test for the click action
+ * of the recycler view
  */
 
 @RunWith(AndroidJUnit4.class)
@@ -37,10 +40,7 @@ public class MainActivityScreenTest
         onView(withId(R.id.recipe_recycler_view))
                 .perform(actionOnItemAtPosition(0, click()));
 
-
         // Checks that the RecipeDescriptionActivity opens with the correct recipe name displayed
         onView(withId(R.id.recipe_name_textview)).check(matches(withText(RECIPE_NAME)));
-
-
     }
 }
