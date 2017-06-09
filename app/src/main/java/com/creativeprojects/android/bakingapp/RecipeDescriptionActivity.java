@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.creativeprojects.android.bakingapp.models.Recipe;
 import com.creativeprojects.android.bakingapp.models.Step;
@@ -26,6 +27,13 @@ public class RecipeDescriptionActivity extends AppCompatActivity implements Step
 
         if(findViewById(R.id.description_fragment_container) != null)
             mTwoPane = true;
+        else
+        {
+            TextView recipeNameTextView = (TextView) findViewById(R.id.recipe_name_textview);
+
+            // Set the name of the recipe chosen
+            recipeNameTextView.setText(mRecipe.getName());
+        }
 
         if(savedInstanceState == null)
         {
