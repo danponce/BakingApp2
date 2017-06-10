@@ -40,10 +40,10 @@ public class RecipesAndStepsSelectionTest
     @Test
     public void recipesAndStepsSelectionTest()
     {
-        ViewInteraction recyclerView = onView(allOf(withId(R.id.recipe_recycler_view), withParent(allOf(withId(R.id.activity_main), withParent(withId(android.R.id.content)))), isDisplayed()));
+        ViewInteraction recyclerView = onView(withId(R.id.recipe_recycler_view));
         recyclerView.perform(actionOnItemAtPosition(1, click()));
 
-        ViewInteraction recyclerView2 = onView(allOf(withId(R.id.step_selection_recycler_view), withParent(withId(R.id.fragment_container)), isDisplayed()));
+        ViewInteraction recyclerView2 = onView(withId(R.id.step_selection_recycler_view));
         recyclerView2.perform(actionOnItemAtPosition(0, click()));
 
         ViewInteraction textView = onView(withId(R.id.description_textview));
