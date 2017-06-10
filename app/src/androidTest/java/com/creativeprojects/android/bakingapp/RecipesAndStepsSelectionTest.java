@@ -2,6 +2,7 @@ package com.creativeprojects.android.bakingapp;
 
 
 import android.os.SystemClock;
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -40,6 +42,8 @@ public class RecipesAndStepsSelectionTest
     @Test
     public void recipesAndStepsSelectionTest()
     {
+        SystemClock.sleep(5000);
+
         ViewInteraction recyclerView = onView(withId(R.id.recipe_recycler_view));
         recyclerView.perform(actionOnItemAtPosition(1, click()));
 
@@ -49,11 +53,19 @@ public class RecipesAndStepsSelectionTest
         ViewInteraction textView = onView(withId(R.id.description_textview));
         textView.check(matches(withText("Recipe Introduction")));
 
-        ViewInteraction button = onView(withId(R.id.next_step_button));
-        button.check(matches(isDisplayed()));
-
         ViewInteraction view = onView(withId(R.id.exo_content_frame));
         view.check(matches(isDisplayed()));
+
+        ViewInteraction nextButton = onView(withId(R.id.next_step_button));
+
+        try {
+            nextButton.check(matches(isDisplayed()));
+            //view is displayed logic
+        } catch (NoMatchingViewException e) {
+            //view not displayed logic
+            //It means that the device corresponds to a sw600dp so this button does not exists
+            return;
+        }
 
         ViewInteraction appCompatButton = onView(withId(R.id.next_step_button));
         appCompatButton.perform(click());
