@@ -49,39 +49,41 @@ public class RecipesAndStepsSelectionTest
         ViewInteraction textView = onView(withId(R.id.description_textview));
         textView.check(matches(withText("Recipe Introduction")));
 
-        ViewInteraction button = onView(allOf(withId(R.id.next_step_button), childAtPosition(childAtPosition(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class), 2), 0), isDisplayed()));
+        ViewInteraction button = onView(withId(R.id.next_step_button));
         button.check(matches(isDisplayed()));
 
-        ViewInteraction view = onView(allOf(childAtPosition(allOf(withId(R.id.exo_content_frame), childAtPosition(withId(R.id.playerView), 1)), 0), isDisplayed()));
+        ViewInteraction view = onView(withId(R.id.exo_content_frame));
         view.check(matches(isDisplayed()));
 
-        ViewInteraction appCompatButton = onView(allOf(withId(R.id.next_step_button), withText("Next"), isDisplayed()));
+        ViewInteraction appCompatButton = onView(withId(R.id.next_step_button));
         appCompatButton.perform(click());
 
-        ViewInteraction textView2 = onView(allOf(withId(R.id.description_textview), withText("1. Preheat the oven to 350�F. Butter the bottom and sides of a 9\"x13\" pan."), childAtPosition(childAtPosition(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class), 0), 1), isDisplayed()));
-        textView2.check(matches(withText("1. Preheat the oven to 350�F. Butter the bottom and sides of a 9\"x13\" pan.")));
+        String description = "1. Preheat the oven to 350�F. Butter the bottom and sides of a 9\"x13\" pan.";
 
-        ViewInteraction button2 = onView(allOf(withId(R.id.back_step_button), childAtPosition(childAtPosition(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class), 1), 0), isDisplayed()));
+        ViewInteraction textView2 = onView(withId(R.id.description_textview));
+        textView2.check(matches(withText(description)));
+
+        ViewInteraction button2 = onView(withId(R.id.back_step_button));
         button2.check(matches(isDisplayed()));
 
-        ViewInteraction button3 = onView(allOf(withId(R.id.next_step_button), childAtPosition(childAtPosition(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class), 1), 1), isDisplayed()));
+        ViewInteraction button3 = onView(withId(R.id.next_step_button));
         button3.check(matches(isDisplayed()));
 
-        ViewInteraction button4 = onView(allOf(withId(R.id.next_step_button), childAtPosition(childAtPosition(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class), 1), 1), isDisplayed()));
+        ViewInteraction button4 = onView(withId(R.id.next_step_button));
         button4.check(matches(isDisplayed()));
 
         pressBack();
 
-        ViewInteraction recyclerView3 = onView(allOf(withId(R.id.step_selection_recycler_view), withParent(withId(R.id.fragment_container)), isDisplayed()));
+        ViewInteraction recyclerView3 = onView(withId(R.id.step_selection_recycler_view));
         recyclerView3.perform(actionOnItemAtPosition(9, click()));
 
-        ViewInteraction view2 = onView(allOf(childAtPosition(allOf(withId(R.id.exo_content_frame), childAtPosition(withId(R.id.playerView), 2)), 0), isDisplayed()));
+        ViewInteraction view2 = onView(withId(R.id.exo_content_frame));
         view2.check(matches(isDisplayed()));
 
-        ViewInteraction textView3 = onView(allOf(withId(R.id.description_textview), withText("9. Cut and serve."), childAtPosition(childAtPosition(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class), 1), 1), isDisplayed()));
+        ViewInteraction textView3 = onView(withId(R.id.description_textview));
         textView3.check(matches(withText("9. Cut and serve.")));
 
-        ViewInteraction button5 = onView(allOf(withId(R.id.back_step_button), childAtPosition(childAtPosition(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class), 2), 0), isDisplayed()));
+        ViewInteraction button5 = onView(withId(R.id.back_step_button));
         button5.check(matches(isDisplayed()));
 
     }
